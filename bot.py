@@ -9,6 +9,7 @@ SESSION_NAME = 'nebo_kr_bot'
 SOURCE_CHANNEL = '@NeboSportyvu'
 TARGET_CHANNEL = '@nebo_kr'
 
+# Точні шаблони з правильними пробілами
 ALERT_TEXT = "🔴  Повітряна тривога в Криворізький район"
 CANCEL_TEXT = "🟢  Відбій тривоги в Криворізький район"
 
