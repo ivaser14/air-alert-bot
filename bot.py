@@ -2,18 +2,25 @@ import asyncio
 from telethon import TelegramClient, events
 import os
 
-API_ID = int(os.getenv('API_ID', 0))
-API_HASH = os.getenv('API_HASH', '')
+API_ID = os.getenv('API_ID')
+API_HASH = os.getenv('API_HASH')
+
+print("DEBUG: API_ID =", API_ID)
+print("DEBUG: API_HASH =", "заповнено" if API_HASH else "ПУСТО!")
+
+if not API_ID or not API_HASH:
+    print("❌ API_ID або API_HASH не знайдено!")
+    exit(1)
+
 SESSION_NAME = 'nebo_kr_bot'
 
 SOURCE_CHANNEL = '@NeboSportyvu'
 TARGET_CHANNEL = '@nebo_kr'
 
-# Точні шаблони з правильними пробілами
 ALERT_TEXT = "🔴  Повітряна тривога в Криворізький район"
 CANCEL_TEXT = "🟢  Відбій тривоги в Криворізький район"
 
-client = TelegramClient(SESSION_NAME, API_ID, API_HASH)
+client = TelegramClient(SESSION_NAME, int(API_ID), API_HASH)
 
 def is_alert_message(text: str) -> bool:
     if not text:
@@ -38,7 +45,7 @@ async def handler(event):
 
 async def main():
     await client.start()
-    print("🚨 Бот запущений на Render!")
+    print("🚨 Бот успішно запущений!")
     await client.run_until_disconnected()
 
 if __name__ == '__main__':
