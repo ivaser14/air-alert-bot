@@ -2,17 +2,10 @@ import asyncio
 from telethon import TelegramClient, events
 import os
 
-API_ID = os.getenv('API_ID')
-API_HASH = os.getenv('API_HASH')
-
-print("=== DEBUG INFO ===")
-print("API_ID =", API_ID)
-print("API_HASH =", "✅ Заповнено" if API_HASH else "❌ ПУСТО")
-print("==================")
-
-if not API_ID or not API_HASH:
-    print("❌ API дані не знайдено!")
-    exit(1)
+# ================== НАЛАШТУВАННЯ ==================
+# Заміни ці два значення на свої!
+API_ID = 30622563                    # ← Твій API ID (тільки цифри)
+API_HASH = '1298b1587c44279db1b299d6c59887b4'  # ← Твій API Hash
 
 SESSION_NAME = 'nebo_kr_bot'
 
@@ -21,8 +14,14 @@ TARGET_CHANNEL = '@nebo_kr'
 
 ALERT_TEXT = "🔴  Повітряна тривога в Криворізький район"
 CANCEL_TEXT = "🟢  Відбій тривоги в Криворізький район"
+# =================================================
 
-client = TelegramClient(SESSION_NAME, int(API_ID), API_HASH)
+print("=== DEBUG INFO ===")
+print("API_ID =", API_ID)
+print("API_HASH = ✅ Заповнено")
+print("==================")
+
+client = TelegramClient(SESSION_NAME, API_ID, API_HASH)
 
 def is_alert_message(text: str) -> bool:
     if not text:
@@ -41,13 +40,15 @@ async def handler(event):
                 file=msg.media if msg.media else None,
                 formatting_entities=msg.entities
             )
-            print(f"✅ Опубліковано: {msg.text[:80]}...")
+            print(f"✅ Опубліковано в @nebo_kr: {msg.text[:80]}...")
     except Exception as e:
         print(f"Помилка: {e}")
 
 async def main():
+    print("🚨 Бот запускається...")
     await client.start()
-    print("🚨 Бот успішно запущений 24/7!")
+    print("🚨 Бот успішно запущений і працює!")
+    print(f"Слухаємо {SOURCE_CHANNEL} → публікуємо в {TARGET_CHANNEL}")
     await client.run_until_disconnected()
 
 if __name__ == '__main__':
