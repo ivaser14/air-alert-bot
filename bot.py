@@ -3,31 +3,29 @@ from telethon import TelegramClient, events
 import os
 
 # ================== НАЛАШТУВАННЯ ==================
-# Заміни ці два значення на свої!
-API_ID = 30622563                    # ← Твій API ID (тільки цифри)
-API_HASH = '1298b1587c44279db1b299d6c59887b4'  # ← Твій API Hash
+API_ID = 30622563
+API_HASH = '1298b1587c44279db1b299d6c59887b4'
 
 SESSION_NAME = 'nebo_kr_bot'
 
 SOURCE_CHANNEL = '@NeboSportyvu'
 TARGET_CHANNEL = '@nebo_kr'
 
-ALERT_TEXT = "🔴  Повітряна тривога в Криворізький район"
-CANCEL_TEXT = "🟢  Відбій тривоги в Криворізький район"
-# =================================================
-
-print("=== DEBUG INFO ===")
-print("API_ID =", API_ID)
-print("API_HASH = ✅ Заповнено")
-print("==================")
-
 client = TelegramClient(SESSION_NAME, API_ID, API_HASH)
 
 def is_alert_message(text: str) -> bool:
     if not text:
         return False
-    text = text.strip()
-    return (text.startswith(ALERT_TEXT) or text.startswith(CANCEL_TEXT)) and "Слідкуйте за подальшими повідомленнями" in text
+    text_lower = text.lower().strip()
+    
+    # М'яка перевірка
+    has_red = "🔴" in text or "повітряна тривога" in text_lower
+    has_green = "🟢" in text or "відбій" in text_lower
+    has_kr = "криворізький район" in text_lower
+    has_follow = "слідкуйте за подальшими повідомленнями" in text_lower
+    
+    return (has_red or has_green) and has_kr and has_follow
+
 
 @client.on(events.NewMessage(chats=[SOURCE_CHANNEL]))
 async def handler(event):
@@ -40,15 +38,17 @@ async def handler(event):
                 file=msg.media if msg.media else None,
                 formatting_entities=msg.entities
             )
-            print(f"✅ Опубліковано в @nebo_kr: {msg.text[:80]}...")
+            print(f"✅ ОПУБЛІКОВАНО: {msg.text[:100]}...")
+        else:
+            # Для дебагу — показуємо, що бот бачить
+            if "криворізький" in (msg.text or "").lower():
+                print(f"📌 Побачив повідомлення з Криворізьким, але не підходить під фільтр: {msg.text[:80]}...")
     except Exception as e:
         print(f"Помилка: {e}")
 
 async def main():
-    print("🚨 Бот запускається...")
     await client.start()
-    print("🚨 Бот успішно запущений і працює!")
-    print(f"Слухаємо {SOURCE_CHANNEL} → публікуємо в {TARGET_CHANNEL}")
+    print("🚨 Бот запущений! Чекаємо повідомлень з @NeboSportyvu")
     await client.run_until_disconnected()
 
 if __name__ == '__main__':
