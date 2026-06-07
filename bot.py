@@ -5,11 +5,13 @@ import os
 API_ID = os.getenv('API_ID')
 API_HASH = os.getenv('API_HASH')
 
-print("DEBUG: API_ID =", API_ID)
-print("DEBUG: API_HASH =", "заповнено" if API_HASH else "ПУСТО!")
+print("=== DEBUG INFO ===")
+print("API_ID =", API_ID)
+print("API_HASH =", "✅ Заповнено" if API_HASH else "❌ ПУСТО")
+print("==================")
 
 if not API_ID or not API_HASH:
-    print("❌ API_ID або API_HASH не знайдено!")
+    print("❌ API дані не знайдено!")
     exit(1)
 
 SESSION_NAME = 'nebo_kr_bot'
@@ -45,7 +47,7 @@ async def handler(event):
 
 async def main():
     await client.start()
-    print("🚨 Бот успішно запущений!")
+    print("🚨 Бот успішно запущений 24/7!")
     await client.run_until_disconnected()
 
 if __name__ == '__main__':
